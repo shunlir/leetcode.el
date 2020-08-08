@@ -134,6 +134,9 @@ The elements of :problems has attributes:
 (defconst leetcode--description-buffer-name "*leetcode-description*")
 (defconst leetcode--testcase-buffer-name    "*leetcode-testcase*")
 (defconst leetcode--result-buffer-name      "*leetcode-result*")
+(defvar leetcode--description-window nil)
+(defvar leetcode--testcase-window nil)
+(defvar leetcode--result-window nil)
 
 (defface leetcode-paid-face
   '((t (:foreground "gold")))
@@ -733,11 +736,11 @@ nil."
 |               |    Result      |
 +---------------+----------------+"
   (delete-other-windows)
-  (split-window-horizontally)
+  (setq leetcode--description-window (split-window-horizontally))
   (other-window 1)
-  (split-window-below)
+  (setq leetcode--testcase-window (split-window-below))
   (other-window 1)
-  (split-window-below)
+  (setq leetcode--result-window (split-window-below))
   (other-window -1)
   (other-window -1))
 
@@ -1043,16 +1046,10 @@ for current problem."
   (with-current-buffer (get-buffer-create leetcode--testcase-buffer-name)
     (erase-buffer)
     (insert testcase)
-    (display-buffer (current-buffer)
-                    '((display-buffer-reuse-window
-                       leetcode--display-testcase)
-                      (reusable-frames . visible))))
+    (set-window-buffer leetcode--testcase-window (current-buffer)))
   (with-current-buffer (get-buffer-create leetcode--result-buffer-name)
     (erase-buffer)
-    (display-buffer (current-buffer)
-                    '((display-buffer-reuse-window
-                       leetcode--display-result)
-                      (reusable-frames . visible)))))
+    (set-window-buffer leetcode--result-window (current-buffer))))
 
 (defvar leetcode--problems-mode-map
   (let ((map (make-sparse-keymap)))
